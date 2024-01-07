@@ -5,16 +5,16 @@ Troll SpringBoard into thinking it's running on iPadOS
 - Grid app switcher
 - Multitasking button
 - Floating dock
- + Recent apps
- + App Library
+  + Recent apps
+  + App Library
 - Split View
 - Slide Over
 - Stage Manager
- + Requires iOS 16 or later
- + External display support is untested
- + Additional steps required
+  + Requires iOS 16 or later
+  + External display support is untested
+  + Additional steps required
 - Floating keyboard
- + Only works inside SpringBoard
+  + Only works inside SpringBoard
 
 ### Enabling Stage Manager
 #### Modifying MobileGestalt cache
