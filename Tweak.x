@@ -9,13 +9,14 @@
 #import <objc/runtime.h>
 
 // Do this to pass most iPad checks
-UIUserInterfaceIdiom userInterfaceIdiom = UIUserInterfaceIdiomPad;
+//UIUserInterfaceIdiom userInterfaceIdiom = UIUserInterfaceIdiomPad;
 @implementation UIDevice(hook)
 - (UIUserInterfaceIdiom)userInterfaceIdiom {
-    return userInterfaceIdiom;
+    return UIUserInterfaceIdiomPad;
 }
 @end
 
+/*
 %hook _UIStatusBarVisualProvider_iOS
 + (Class)class {
     static BOOL called = NO;
@@ -27,6 +28,7 @@ UIUserInterfaceIdiom userInterfaceIdiom = UIUserInterfaceIdiomPad;
     }
 }
 %end
+*/
 
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
 @interface SpringBoard : NSObject
