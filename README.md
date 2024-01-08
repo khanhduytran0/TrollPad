@@ -17,6 +17,9 @@ Troll SpringBoard into thinking it's running on iPadOS
   + Only works inside SpringBoard
 
 ### Enabling Stage Manager
+> [!CAUTION]
+> When uninstalling this tweak with Stage Manager still enabled, do not remove MobileGestalt key. Doing so can cause bootloop. It's best to keep MobileGestalt key there.
+
 #### Modifying MobileGestalt cache
 - Open `/var/containers/Shared/SystemGroup/systemgroup.com.apple.mobilegestaltcache/Library/Caches/com.apple.MobileGestalt.plist` in plist editor
 - Open `CacheExtra`
