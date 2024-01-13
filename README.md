@@ -18,7 +18,8 @@ Troll SpringBoard into thinking it's running on iPadOS
 
 ### Enabling Stage Manager
 > [!CAUTION]
-> When uninstalling this tweak with Stage Manager still enabled, do not remove MobileGestalt key. Doing so can cause bootloop. It's best to keep MobileGestalt key there.
+> - When uninstalling this tweak with Stage Manager still enabled, do not remove MobileGestalt key. Doing so can cause bootloop. It's best to keep MobileGestalt key there.
+> - #4: Do not disable `Show Dock`. Doing so may cause respring loop when rotating device to landscape. 
 
 #### Modifying MobileGestalt cache
 - Open `/var/containers/Shared/SystemGroup/systemgroup.com.apple.mobilegestaltcache/Library/Caches/com.apple.MobileGestalt.plist` in plist editor
