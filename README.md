@@ -19,7 +19,7 @@ Troll SpringBoard into thinking it's running on iPadOS
 > [!WARNING]
 > It is recommended to enable Stage Manager using Control Center module only, so that there will be no risk of bootloop.
 
-#### Modifying MobileGestalt cache (optional, may be useful later for external display support?)
+#### Modifying MobileGestalt cache
 - Open `/var/containers/Shared/SystemGroup/systemgroup.com.apple.mobilegestaltcache/Library/Caches/com.apple.MobileGestalt.plist` in plist editor
 - Open `CacheExtra`
 - Add a key named `qeaj75wk3HF4DwQ8qbIi7g`, type `Number` and set value to `1`.
