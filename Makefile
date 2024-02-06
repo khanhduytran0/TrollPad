@@ -1,10 +1,10 @@
-ARCHS := arm64
+ARCHS := arm64 arm64e
 TARGET := iphone:clang:latest:15.0
 INSTALL_TARGET_PROCESSES = SpringBoard
 THEOS_PACKAGE_SCHEME := rootless
 
 include $(THEOS)/makefiles/common.mk
-# TARGET_CODESIGN = fastPathSign
+TARGET_CODESIGN = fastPathSign
 
 TWEAK_NAME = TrollPad
 

@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set -e
+bundle_system=/System/Library/ControlCenter/Bundles/ContinuousExposeModule.bundle
+# FIXME: use $JB_ROOT_PATH instead?
+bundle_jb=/var/jb/Library/ControlCenter/Bundles/ContinuousExposeModule.bundle
+plistbuddy=/var/jb/usr/libexec/PlistBuddy
+
+case "$1" in
+	(configure)
+	if [ -d $bundle_system ] ; then
+		# Copy Stage Manager CC module
+		ln -sf $bundle_system/* $bundle_jb/
+		rm $bundle_jb/Info.plist
+		cp $bundle_system/Info.plist $bundle_jb/Info.plist
+		$plistbuddy -c "Delete :SBIconVisibilityDefaultVisible" $bundle_jb/Info.plist
+		$plistbuddy -c "Delete :SBIconVisibilitySetByAppPreference" $bundle_jb/Info.plist
+		$plistbuddy -c "Add :UIDeviceFamily:0 integer 1" $bundle_jb/Info.plist
+	fi
+	;;
+	(abort-upgrade|abort-remove|abort-deconfigure)
+	exit 0
+	;;
+	(*)
+	echo "postinst called with unknown argument \`$1'" >&2
+	exit 0
+	;;
+esac
+
+exit 0

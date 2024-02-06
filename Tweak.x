@@ -8,56 +8,79 @@
 #include <dispatch/dispatch.h>
 #import <objc/runtime.h>
 
-// Do this to pass most iPad checks
-//UIUserInterfaceIdiom userInterfaceIdiom = UIUserInterfaceIdiomPad;
-@implementation UIDevice(hook)
-- (UIUserInterfaceIdiom)userInterfaceIdiom {
-    return UIUserInterfaceIdiomPad;
+// Hook this to avoid real keys from being set
+%hook NSUserDefaults
+- (void)setBool:(BOOL)value forKey:(NSString *)key {
+    if ([key isEqualToString:@"SBChamoisHideDock"]) {
+        // Never ever set this to YES, as it is known to respring loop
+        %orig(NO, key);
+    } else if ([key hasPrefix:@"SBChamois"]) {
+        %orig(value, [NSString stringWithFormat:@"TrollPad_%@", key]);
+    } else {
+        %orig;
+    }
 }
-@end
 
-/*
-%hook _UIStatusBarVisualProvider_iOS
-+ (Class)class {
-    static BOOL called = NO;
-    called = !called;
-    if (called) {
-        return NSClassFromString(@"_UIStatusBarVisualProvider_Split58");
+- (BOOL)boolForKey:(NSString *)key {
+    if ([key hasPrefix:@"SBChamois"]) {
+        return %orig([NSString stringWithFormat:@"TrollPad_%@", key]);
+    } else {
+        return %orig;
+    }
+}
+
+- (void)addObserver:(NSObject *)observer forKeyPath:(NSString *)key options:(NSKeyValueObservingOptions)options context:(void *)context {
+    if ([key hasPrefix:@"SBChamois"]) {
+        return %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key], options, context);
+    } else {
+        return %orig;
+    }
+}
+
+- (void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)key context:(void *)context {
+    if ([key hasPrefix:@"SBChamois"]) {
+        return %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key], context);
     } else {
         return %orig;
     }
 }
 %end
+
+// Do this to pass most iPad checks
+%hook UIDevice
+- (UIUserInterfaceIdiom)userInterfaceIdiom {
+    return UIUserInterfaceIdiomPad;
+}
+%end
+
+/*
+%hook _UIStatusBarVisualProvider_iOS
++ (Class)class {
+    return %c(_UIStatusBarVisualProvider_Split58);
+}
+%end
 */
 
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
-@interface SpringBoard : NSObject
-@end
-@implementation SpringBoard(hook)
+%hook SpringBoard
 - (NSInteger)homeScreenRotationStyle {
 	return 2;
 }
-@end
+%end
 
-@interface SBMedusaConfigurationUsageMetric : NSObject
-@end
-@implementation SBMedusaConfigurationUsageMetric(hook)
+%hook SBMedusaConfigurationUsageMetric
 - (BOOL)_isFloatingActive {
 	return YES;
 }
-@end
+%end
 
-@interface SBPlatformController : NSObject
-@end
-@implementation SBPlatformController(hook)
+%hook SBPlatformController
 -(NSInteger)medusaCapabilities {
     return 2;
 }
-@end
+%end
 
-@interface SBApplication : NSObject
-@end
-@implementation SBApplication(hook)
+%hook SBApplication
 -(BOOL)isMedusaCapable {
     return YES;
 }
@@ -65,20 +88,16 @@
 - (BOOL)_supportsApplicationType:(int)arg1 {
 	return YES;
 }
-@end
+%end
 
-@interface SBMainWorkspace : NSObject
-@end
-@implementation SBMainWorkspace(hook)
+%hook SBMainWorkspace
 - (BOOL)isMedusaEnabled {
     return YES;
 }
-@end
+%end
 
-@interface SBFloatingDockController : NSObject
-@end
-@implementation SBFloatingDockController(hook)
+%hook SBFloatingDockController
 + (BOOL)isFloatingDockSupported {
     return YES;
 }
-@end
+%end
