@@ -61,6 +61,13 @@
 %end
 */
 
+// Workaround for iPhones with home button not being able to open Control Center
+%hook SBHomeGestureSettings
+- (BOOL)isHomeGestureEnabled {
+    return YES;
+}
+%end
+
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
 %hook SpringBoard
 - (NSInteger)homeScreenRotationStyle {
