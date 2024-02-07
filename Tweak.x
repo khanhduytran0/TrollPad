@@ -62,9 +62,9 @@
 */
 
 // Workaround for iPhones with home button not being able to open Control Center
-%hook SBHomeGestureSettings
-- (BOOL)isHomeGestureEnabled {
-    return YES;
+%hook BSPlatform
+- (NSInteger)homeButtonType {
+    return 2;
 }
 %end
 
