@@ -10,6 +10,7 @@ TWEAK_NAME = TrollPad
 
 TrollPad_FILES = Tweak.x
 TrollPad_CFLAGS = -fobjc-arc
-TrollPad_PRIVATE_FRAMEWORKS = BoardServices SpringBoard
+TrollPad_LDFLAGS = -lMobileGestalt
+# TrollPad_PRIVATE_FRAMEWORKS = BoardServices SpringBoard
 
 include $(THEOS_MAKE_PATH)/tweak.mk

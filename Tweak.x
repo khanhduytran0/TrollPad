@@ -24,6 +24,9 @@
 - (BOOL)boolForKey:(NSString *)key {
     if ([key hasPrefix:@"SBChamois"]) {
         return %orig([NSString stringWithFormat:@"TrollPad_%@", key]);
+    } else if ([key isEqualToString:@"SBExtendedDisplayOverrideSupportForAirPlayAndDontFileRadars"]) {
+        // Unlock AirPlay as External Display
+        return YES;
     } else {
         return %orig;
     }
@@ -31,40 +34,82 @@
 
 - (void)addObserver:(NSObject *)observer forKeyPath:(NSString *)key options:(NSKeyValueObservingOptions)options context:(void *)context {
     if ([key hasPrefix:@"SBChamois"]) {
-        return %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key], options, context);
+        %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key], options, context);
     } else {
-        return %orig;
+        %orig;
     }
 }
 
 - (void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)key context:(void *)context {
     if ([key hasPrefix:@"SBChamois"]) {
-        return %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key], context);
+        %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key], context);
     } else {
-        return %orig;
+        %orig;
+    }
+}
+
+- (void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)key {
+    if ([key hasPrefix:@"SBChamois"]) {
+        %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key]);
+    } else {
+        %orig;
     }
 }
 %end
 
-// Do this to pass most iPad checks
+// Since some methods explicitly check for user interface idiom, I have no better way to fool them
+// so I just hook them, set iPad idiom when necessary and set back to iPhone after calling original
+UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 %hook UIDevice
 - (UIUserInterfaceIdiom)userInterfaceIdiom {
-    return UIUserInterfaceIdiomPad;
+    return overrideIdiom;
 }
 %end
 
-/*
-%hook _UIStatusBarVisualProvider_iOS
-+ (Class)class {
-    return %c(_UIStatusBarVisualProvider_Split58);
+// Enable Medusa decoration (three-dots button) on top
+%hook SBFullScreenSwitcherSceneLiveContentOverlay
+- (void)configureWithWorkspaceEntity:(id)arg1 referenceFrame:(CGRect)arg2 contentOrientation:(NSInteger)arg3 containerOrientation:(long long)arg4 layoutRole:(NSInteger)arg5 sbsDisplayLayoutRole:(NSInteger)arg6 spaceConfiguration:(NSInteger)arg7 floatingConfiguration:(NSInteger)arg8 hasClassicAppOrientationMismatch:(BOOL)arg9 sizingPolicy:(NSInteger)arg10 {
+    overrideIdiom = UIUserInterfaceIdiomPad;
+    %orig;
+    overrideIdiom = UIUserInterfaceIdiomPhone;
 }
 %end
-*/
+
+// Fix iOS 16 multitasking (split screen, slide over, stage manager)
+%hook SBMainSwitcherControllerCoordinator
+- (void)_loadContentViewControllerIfNecessaryForWindowScene:(id)scene {
+    overrideIdiom = UIUserInterfaceIdiomPad;
+    %orig;
+    overrideIdiom = UIUserInterfaceIdiomPhone;
+}
+%end
+
+// FIXME: Is this needed?
+%hook SBTraitsPipelineManager
+-(id)defaultOrientationAnimationSettingsAnimatable:(BOOL)animatable {
+    overrideIdiom = UIUserInterfaceIdiomPad;
+    id result = %orig;
+    overrideIdiom = UIUserInterfaceIdiomPhone;
+    return result;
+}
+%end
 
 // Workaround for iPhones with home button not being able to open Control Center
 %hook BSPlatform
 - (NSInteger)homeButtonType {
-    return 2;
+     return 2;
+}
+%end
+%hook SBControlCenterController
+-(NSUInteger)presentingEdge {
+    return 1;
+}
+%end
+
+// Use iPadOS app switching animation instead
+%hook SBFluidSwitcherViewController
+- (BOOL)isDevicePad {
+    return YES;
 }
 %end
 
@@ -108,3 +153,30 @@
     return YES;
 }
 %end
+
+// Force iPad app switcher, otherwise it will be broken
+%hook SBAppSwitcherSettings
+- (NSInteger)effectiveSwitcherStyle {
+    return 2;
+}
+%end
+
+#pragma mark - Bypass Keyboard & Mouse requirement
+@interface SBExternalDisplayRuntimeAvailabilitySettings : NSObject
+@property(nonatomic, assign) BOOL requirePointer, requireHardwareKeyboard;
+@end
+%hook SBExternalDisplayRuntimeAvailabilitySettings
+- (void)setDefaultValues {
+    self.requireHardwareKeyboard = NO;
+    self.requirePointer = NO;
+}
+%end
+
+BOOL MGGetBoolAnswer(NSString* property);
+%hookf(BOOL, MGGetBoolAnswer, NSString* property) {
+    // Hook ipad, DeviceSupportsEnhancedMultitasking
+    if ([property isEqualToString:@"DeviceSupportsEnhancedMultitasking"]) {
+        return YES;
+    }
+    return %orig;
+}
