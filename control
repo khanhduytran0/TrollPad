@@ -6,4 +6,4 @@ Description: Troll SpringBoard into thinking it's running on iPadOS.
 Maintainer: khanhduytran0
 Author: khanhduytran0
 Section: Tweaks
-Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 15.0), plistbuddy
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 15.0), plistbuddy, oldabi
