@@ -11,24 +11,15 @@ Troll SpringBoard into thinking it's running on iPadOS
 - Slide Over
 - Stage Manager
   + Requires iOS 16 or later
-  + External display support is untested
-- Floating keyboard
-  + Only works inside SpringBoard
+  + External display supports AirPlay too!
+- ~~Floating keyboard~~ this is currently unavailable and will be added back later
 
 ### Enabling Stage Manager
 > [!WARNING]
 > It is recommended to enable Stage Manager using Control Center module only, so that there will be no risk of bootloop.
+- Add Stage Manager toggle to Control Center
 
-#### Modifying MobileGestalt cache
-- Open `/var/containers/Shared/SystemGroup/systemgroup.com.apple.mobilegestaltcache/Library/Caches/com.apple.MobileGestalt.plist` in plist editor
-- Open `CacheExtra`
-- Add a key named `qeaj75wk3HF4DwQ8qbIi7g`, type `Number` and set value to `1`.
-
-#### Creating toggle shortcut
-Deprecated. Please use Control Center instead.
+For external display, the behavior is same as on iPadOS: plug and play.
 
 ## Side effects
-- Status bar has the style of iPadOS.
-- Control Center layout becomes smaller
-- In multitasking modes in landscape, left and right are affected by layout margins.
-- App Library grid group going out of bounds
+- In multitasking modes in landscape, left and right are affected by safe area layout margins
