@@ -49,13 +49,11 @@ static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 %end
 
 // Workaround for iPhones with home button not being able to open Control Center
-/*
 %hook BSPlatform
 - (NSInteger)homeButtonType {
      return 2;
 }
 %end
-*/
 %hook SBControlCenterController
 -(NSUInteger)presentingEdge {
     return 1;
