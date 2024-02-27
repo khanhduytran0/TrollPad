@@ -8,9 +8,11 @@ include $(THEOS)/makefiles/common.mk
 
 TWEAK_NAME = TrollPad
 
-TrollPad_FILES = Tweak.x
+TrollPad_FILES = Tweak.x TrollPadPrefs/NSUserDefaults+hook.x TPPrefsObserver.m
 TrollPad_CFLAGS = -fobjc-arc
 TrollPad_LDFLAGS = -lMobileGestalt
 # TrollPad_PRIVATE_FRAMEWORKS = BoardServices SpringBoard
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+SUBPROJECTS += TrollPadPrefs
+include $(THEOS_MAKE_PATH)/aggregate.mk

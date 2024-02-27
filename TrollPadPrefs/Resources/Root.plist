@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Stage Manager</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkListCell</string>
+			<key>detail</key>
+			<string>DBSMultitaskingContinuousExposeController</string>
+			<key>id</key>
+			<string>CONTINUOUS-EXPOSE</string>
+			<key>label</key>
+			<string>Stage Manager</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>action</key>
+			<string>openDisplayArrangement</string>
+			<key>id</key>
+			<string>DISPLAY_ARRANGEMENT</string>
+			<key>label</key>
+			<string>Display Arrangement (doesn't work?)</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.apple.springboard</string>
+			<key>key</key>
+			<string>SBExtendedDisplayOverrideSupportForAirPlayAndDontFileRadars</string>
+			<key>label</key>
+			<string>Use AirPlay as External Display</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Miscellaneous</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.apple.springboard</string>
+			<key>key</key>
+			<string>TPUseiPadAppSwitchingAnimation</string>
+			<key>label</key>
+			<string>iPadOS app switching animation</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.apple.springboard</string>
+			<key>id</key>
+			<string>SHOW_APP_LIBRARY</string>
+			<key>key</key>
+			<string>SBAppLibraryInDockEnabled</string>
+			<key>label</key>
+			<string>Show App Library in Dock</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.apple.springboard</string>
+			<key>id</key>
+			<string>ALLOW_RECENTS</string>
+			<key>key</key>
+			<string>SBRecentsEnabled</string>
+			<key>label</key>
+			<string>Show Recents in Dock</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>About me</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>openSourceCode</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>icon</key>
+			<string>GitHub.png</string>
+			<key>label</key>
+			<string>khanhduytran0/TrollPad</string>
+		</dict>
+		<dict>
+			<key>action</key>
+			<string>openTwitter</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>icon</key>
+			<string>Twitter.png</string>
+			<key>label</key>
+			<string>@TranKha50277352</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>TrollPad</string>
+</dict>
+</plist>

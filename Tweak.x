@@ -1,65 +1,19 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import <objc/runtime.h>
+#import "TPPrefsObserver.h"
 
 #include <assert.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include <xpc/xpc.h>
 #include <dispatch/dispatch.h>
-#import <objc/runtime.h>
 
-// Hook this to avoid real keys from being set
-%hook NSUserDefaults
-- (void)setBool:(BOOL)value forKey:(NSString *)key {
-    if ([key isEqualToString:@"SBChamoisHideDock"]) {
-        // Never ever set this to YES, as it is known to respring loop
-        %orig(NO, key);
-    } else if ([key hasPrefix:@"SBChamois"]) {
-        %orig(value, [NSString stringWithFormat:@"TrollPad_%@", key]);
-    } else {
-        %orig;
-    }
-}
-
-- (BOOL)boolForKey:(NSString *)key {
-    if ([key hasPrefix:@"SBChamois"]) {
-        return %orig([NSString stringWithFormat:@"TrollPad_%@", key]);
-    } else if ([key isEqualToString:@"SBExtendedDisplayOverrideSupportForAirPlayAndDontFileRadars"]) {
-        // Unlock AirPlay as External Display
-        return YES;
-    } else {
-        return %orig;
-    }
-}
-
-- (void)addObserver:(NSObject *)observer forKeyPath:(NSString *)key options:(NSKeyValueObservingOptions)options context:(void *)context {
-    if ([key hasPrefix:@"SBChamois"]) {
-        %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key], options, context);
-    } else {
-        %orig;
-    }
-}
-
-- (void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)key context:(void *)context {
-    if ([key hasPrefix:@"SBChamois"]) {
-        %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key], context);
-    } else {
-        %orig;
-    }
-}
-
-- (void)removeObserver:(NSObject *)observer forKeyPath:(NSString *)key {
-    if ([key hasPrefix:@"SBChamois"]) {
-        %orig(observer, [NSString stringWithFormat:@"TrollPad_%@", key]);
-    } else {
-        %orig;
-    }
-}
-%end
+static TPPrefsObserver* pref;
 
 // Since some methods explicitly check for user interface idiom, I have no better way to fool them
 // so I just hook them, set iPad idiom when necessary and set back to iPhone after calling original
-UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
+static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 %hook UIDevice
 - (UIUserInterfaceIdiom)userInterfaceIdiom {
     return overrideIdiom;
@@ -95,11 +49,13 @@ UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 %end
 
 // Workaround for iPhones with home button not being able to open Control Center
+/*
 %hook BSPlatform
 - (NSInteger)homeButtonType {
      return 2;
 }
 %end
+*/
 %hook SBControlCenterController
 -(NSUInteger)presentingEdge {
     return 1;
@@ -109,7 +65,7 @@ UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 // Use iPadOS app switching animation instead
 %hook SBFluidSwitcherViewController
 - (BOOL)isDevicePad {
-    return YES;
+    return pref.useiPadAppSwitchingAnimation;
 }
 %end
 
@@ -179,4 +135,8 @@ BOOL MGGetBoolAnswer(NSString* property);
         return YES;
     }
     return %orig;
+}
+
+%ctor {
+    pref = [TPPrefsObserver new];
 }
