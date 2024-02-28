@@ -4,6 +4,7 @@
 #import "TPPrefsObserver.h"
 
 #include <assert.h>
+#include <dlfcn.h>
 #include <stdbool.h>
 #include <unistd.h>
 #include <xpc/xpc.h>
@@ -67,16 +68,21 @@ static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 }
 %end
 
+// Unlock external display support for MDC versions
+%hookf(BOOL, SBChamoisExternalDisplayControllerIsEnabled) {
+    return YES;
+}
+
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
 %hook SpringBoard
 - (NSInteger)homeScreenRotationStyle {
-	return 2;
+    return 2;
 }
 %end
 
 %hook SBMedusaConfigurationUsageMetric
 - (BOOL)_isFloatingActive {
-	return YES;
+    return YES;
 }
 %end
 
@@ -136,5 +142,15 @@ BOOL MGGetBoolAnswer(NSString* property);
 }
 
 %ctor {
+    // Unlock external display support for MDC versions
+    void *sbFoundationHandle = dlopen("/System/Library/PrivateFrameworks/SpringBoardFoundation.framework/SpringBoardFoundation", RTLD_GLOBAL);
+    // iOS 16.0
+    void *extDisplayEnabledFunc = dlsym(sbFoundationHandle, "SBChamoisExternalDisplayControllerIsEnabled");
+    if (!extDisplayEnabledFunc) {
+        // iOS 16.1.x
+        extDisplayEnabledFunc = dlsym(sbFoundationHandle, "SBFIsChamoisExternalDisplayControllerAvailable");
+    }
+    %init(SBChamoisExternalDisplayControllerIsEnabled = extDisplayEnabledFunc);
+
     pref = [TPPrefsObserver new];
 }

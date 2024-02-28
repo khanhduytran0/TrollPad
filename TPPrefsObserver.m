@@ -4,6 +4,8 @@
 - (instancetype)init {
     self = [super init];
     [self observeKey:@"TPUseiPadAppSwitchingAnimation"];
+    // Fetch keys
+    [self observeValueForKeyPath:nil ofObject:nil change:nil context:nil];
     return self;
 }
 
