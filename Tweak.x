@@ -12,6 +12,7 @@
 
 static TPPrefsObserver* pref;
 
+%group iPhoneHooks
 // Since some methods explicitly check for user interface idiom, I have no better way to fool them
 // so I just hook them, set iPad idiom when necessary and set back to iPhone after calling original
 static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
@@ -68,11 +69,6 @@ static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 }
 %end
 
-// Unlock external display support for MDC versions
-%hookf(BOOL, SBChamoisExternalDisplayControllerIsEnabled) {
-    return YES;
-}
-
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
 %hook SpringBoard
 - (NSInteger)homeScreenRotationStyle {
@@ -120,6 +116,12 @@ static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
     return 2;
 }
 %end
+%end
+
+// Unlock external display support for MDC versions
+%hookf(BOOL, SBChamoisExternalDisplayControllerIsEnabled) {
+    return YES;
+}
 
 #pragma mark - Bypass Keyboard & Mouse requirement
 @interface SBExternalDisplayRuntimeAvailabilitySettings : NSObject
@@ -151,6 +153,10 @@ BOOL MGGetBoolAnswer(NSString* property);
         extDisplayEnabledFunc = dlsym(sbFoundationHandle, "SBFIsChamoisExternalDisplayControllerAvailable");
     }
     %init(SBChamoisExternalDisplayControllerIsEnabled = extDisplayEnabledFunc);
+
+    if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+        %init(iPhoneHooks);
+    }
 
     pref = [TPPrefsObserver new];
 }
