@@ -50,7 +50,7 @@ static uint16_t forcePadIdiom = 0;
                 if (forcePadIdiom > 0) {
                     return UIUserInterfaceIdiomPad;
                 } else {
-                    return UIUserInterfaceIdiomPhone;
+                    return %orig;
                 }
             }
             [fileHandle seekToEndOfFile];
@@ -74,7 +74,7 @@ static uint16_t forcePadIdiom = 0;
     if (forcePadIdiom > 0) {
         return UIUserInterfaceIdiomPad;
     } else {
-        return UIUserInterfaceIdiomPhone;
+        return %orig;
     }
 }
 %end
@@ -247,12 +247,5 @@ BOOL MGGetBoolAnswer(NSString* property);
         MSHookFunction(extDisplayEnabledFunc, hookedExtDisplayEnabledFunc, NULL);
     }
 
-/*
-    if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
-        %init(iPhoneHooks);
-    } else {
-        %init();
-    }
-*/
     pref = [TPPrefsObserver new];
 }
