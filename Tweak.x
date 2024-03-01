@@ -81,7 +81,7 @@ static uint16_t forcePadIdiom = 0;
 
 // Enable Medusa multitasking (three-dots) button on top
 %hook SBFullScreenSwitcherLiveContentOverlayCoordinator
-- (void)_configureLiveContentOverlayView:(id)view forTransitionContext:(id)context layoutRole:(id)role sbsDisplayLayoutRole:(id)sbsRole {
+-(void)layoutStateTransitionCoordinator:(id)arg1 transitionDidBeginWithTransitionContext:(id)arg2 {
     forcePadIdiom++;
     %orig;
     forcePadIdiom--;
