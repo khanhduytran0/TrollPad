@@ -39,6 +39,7 @@ static uint16_t forcePadIdiom = 0;
 - (UIUserInterfaceIdiom)userInterfaceIdiom {
     // Ever wondered how I obtained those random functions to hook? This is my way
 #ifdef DEBUG_LOG_IDIOM
+    {
         static NSFileHandle *fileHandle;
         static int left = 100;
         static NSString *tmpOut = @"/var/mobile/Documents/stack.txt";
