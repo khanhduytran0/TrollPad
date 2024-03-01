@@ -46,6 +46,28 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>label</key>
+			<string>External Display content scale</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>default</key>
+			<real>1</real>
+			<key>min</key>
+			<real>1</real>
+			<key>max</key>
+			<real>3</real>
+			<key>showValue</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.apple.springboard</string>
+			<key>key</key>
+			<string>SBExtendedDisplayContentsScaleAndDontFileRadars</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
 			<string>Miscellaneous</string>
 		</dict>
 		<dict>

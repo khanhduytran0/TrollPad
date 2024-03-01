@@ -10,42 +10,120 @@
 #include <xpc/xpc.h>
 #include <dispatch/dispatch.h>
 
+// #define DEBUG_LOG_IDIOM
+#ifdef DEBUG_LOG_IDIOM
+@interface NSThread(private)
++ (NSString *)ams_symbolicatedCallStackSymbols;
+@end
+#endif
+
 static TPPrefsObserver* pref;
 
-%group iPhoneHooks
 // Since some methods explicitly check for user interface idiom, I have no better way to fool them
 // so I just hook them, set iPad idiom when necessary and set back to iPhone after calling original
-static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
+
+static uint16_t forcePadIdiom = 0;
+
+/*
+%hook UIWindowScene
+- (UIEdgeInsets)_safeAreaInsetsForInterfaceOrientation:(NSInteger)orientation {
+    forcePadIdiom++;
+    UIEdgeInsets result = %orig;
+    forcePadIdiom--;
+    return result;
+}
+%end
+*/
+
 %hook UIDevice
 - (UIUserInterfaceIdiom)userInterfaceIdiom {
-    return overrideIdiom;
+    // Ever wondered how I obtained those random functions to hook? This is my way
+#ifdef DEBUG_LOG_IDIOM
+        static NSFileHandle *fileHandle;
+        static int left = 100;
+        static NSString *tmpOut = @"/var/mobile/Documents/stack.txt";
+        static NSString *realOut = @"/var/mobile/Documents/stack_out.txt";
+        if (!fileHandle) {
+            fileHandle = [NSFileHandle fileHandleForWritingAtPath:tmpOut];
+            if (!fileHandle) {
+                if (forcePadIdiom > 0) {
+                    return UIUserInterfaceIdiomPad;
+                } else {
+                    return UIUserInterfaceIdiomPhone;
+                }
+            }
+            [fileHandle seekToEndOfFile];
+        }
+
+        // Log every single call stack to file
+        NSString *stackTrace = [NSThread ams_symbolicatedCallStackSymbols];
+        [fileHandle writeData:[stackTrace dataUsingEncoding:NSUTF8StringEncoding]];
+        
+        if (left-- == 0) {
+            left = 100;
+            [fileHandle closeFile];
+            fileHandle = nil;
+            [NSFileManager.defaultManager removeItemAtPath:realOut error:nil];
+            [NSFileManager.defaultManager moveItemAtPath:tmpOut toPath:realOut error:nil];
+        }
+        return UIUserInterfaceIdiomPad;
+    }
+#endif
+
+    if (forcePadIdiom > 0) {
+        return UIUserInterfaceIdiomPad;
+    } else {
+        return UIUserInterfaceIdiomPhone;
+    }
 }
 %end
 
-// Enable Medusa decoration (three-dots button) on top
-%hook SBFullScreenSwitcherSceneLiveContentOverlay
-- (void)configureWithWorkspaceEntity:(id)arg1 referenceFrame:(CGRect)arg2 contentOrientation:(NSInteger)arg3 containerOrientation:(long long)arg4 layoutRole:(NSInteger)arg5 sbsDisplayLayoutRole:(NSInteger)arg6 spaceConfiguration:(NSInteger)arg7 floatingConfiguration:(NSInteger)arg8 hasClassicAppOrientationMismatch:(BOOL)arg9 sizingPolicy:(NSInteger)arg10 {
-    overrideIdiom = UIUserInterfaceIdiomPad;
+// Enable Medusa multitasking (three-dots) button on top
+%hook SBFullScreenSwitcherLiveContentOverlayCoordinator
+- (void)_configureLiveContentOverlayView:(id)view forTransitionContext:(id)context layoutRole:(id)role sbsDisplayLayoutRole:(id)sbsRole {
+    forcePadIdiom++;
     %orig;
-    overrideIdiom = UIUserInterfaceIdiomPhone;
+    forcePadIdiom--;
 }
 %end
 
 // Fix iOS 16 multitasking (split screen, slide over, stage manager)
 %hook SBMainSwitcherControllerCoordinator
 - (void)_loadContentViewControllerIfNecessaryForWindowScene:(id)scene {
-    overrideIdiom = UIUserInterfaceIdiomPad;
+    forcePadIdiom++;
     %orig;
-    overrideIdiom = UIUserInterfaceIdiomPhone;
+    forcePadIdiom--;
+}
+%end
+
+// Override app limit, I don't think this is healthy for battery, so I won't make it unlimited...
+%hook SBSwitcherChamoisSettings
+- (NSUInteger)maximumNumberOfAppsOnStage {
+    return 5;
 }
 %end
 
 // FIXME: Is this needed?
 %hook SBTraitsPipelineManager
 -(id)defaultOrientationAnimationSettingsAnimatable:(BOOL)animatable {
-    overrideIdiom = UIUserInterfaceIdiomPad;
+    forcePadIdiom++;
     id result = %orig;
-    overrideIdiom = UIUserInterfaceIdiomPhone;
+    forcePadIdiom--;
+    return result;
+}
+%end
+
+%hook SBTraitsSceneParticipantDelegate
+// Allow upside down
+- (BOOL)_isAllowedToHavePortraitUpsideDown {
+    return YES;
+}
+
+// Fix orientation issue for portrait-only apps
+- (NSInteger)_orientationMode {
+    forcePadIdiom++;
+    NSInteger result = %orig;
+    forcePadIdiom--;
     return result;
 }
 %end
@@ -69,10 +147,19 @@ static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 }
 %end
 
+%hook UIApplication
+- (id)_defaultSupportedInterfaceOrientations {
+    forcePadIdiom++;
+    id result = %orig;
+    forcePadIdiom--;
+    return result;
+}
+%end
+
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
 %hook SpringBoard
 - (NSInteger)homeScreenRotationStyle {
-    return 2;
+    return 1;
 }
 %end
 
@@ -83,13 +170,17 @@ static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
 %end
 
 %hook SBPlatformController
--(NSInteger)medusaCapabilities {
+- (BOOL)isHomeGestureEnabled {
+    return YES;
+}
+
+- (NSInteger)medusaCapabilities {
     return 2;
 }
 %end
 
 %hook SBApplication
--(BOOL)isMedusaCapable {
+- (BOOL)isMedusaCapable {
     return YES;
 }
 
@@ -116,14 +207,13 @@ static UIUserInterfaceIdiom overrideIdiom = UIUserInterfaceIdiomPhone;
     return 2;
 }
 %end
-%end
 
 // Unlock external display support for MDC versions
-%hookf(BOOL, SBChamoisExternalDisplayControllerIsEnabled) {
+BOOL hookedExtDisplayEnabledFunc(){
     return YES;
 }
 
-#pragma mark - Bypass Keyboard & Mouse requirement
+// Bypass Keyboard & Mouse requirement
 @interface SBExternalDisplayRuntimeAvailabilitySettings : NSObject
 @property(nonatomic, assign) BOOL requirePointer, requireHardwareKeyboard;
 @end
@@ -152,11 +242,16 @@ BOOL MGGetBoolAnswer(NSString* property);
         // iOS 16.1.x
         extDisplayEnabledFunc = dlsym(sbFoundationHandle, "SBFIsChamoisExternalDisplayControllerAvailable");
     }
-    %init(SBChamoisExternalDisplayControllerIsEnabled = extDisplayEnabledFunc);
-
-    if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
-        %init(iPhoneHooks);
+    if (extDisplayEnabledFunc) {
+        MSHookFunction(extDisplayEnabledFunc, hookedExtDisplayEnabledFunc, NULL);
     }
 
+/*
+    if (UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+        %init(iPhoneHooks);
+    } else {
+        %init();
+    }
+*/
     pref = [TPPrefsObserver new];
 }
