@@ -7,7 +7,6 @@
 #include <dlfcn.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include <xpc/xpc.h>
 #include <dispatch/dispatch.h>
 
 // #define DEBUG_LOG_IDIOM

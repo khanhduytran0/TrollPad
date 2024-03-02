@@ -1,5 +1,3 @@
-TARGET := iphone:clang:latest:15.0
-
 include $(THEOS)/makefiles/common.mk
 
 BUNDLE_NAME = TrollPad

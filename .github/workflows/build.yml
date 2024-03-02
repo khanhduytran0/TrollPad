@@ -1,0 +1,44 @@
+name: Theos CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Checkout theos/theos
+      uses: actions/checkout@main
+      with:
+        repository: theos/theos
+        ref: master
+        submodules: recursive
+        path: theos
+
+    - name: Checkout chrisharper22/sdks
+      uses: actions/checkout@main
+      with:
+        repository: theos/sdks
+        ref: master
+        sparse-checkout: iPhoneOS16.5.sdk
+        path: theos/sdks
+
+    - name: Build
+      run: |
+        brew install make xz ldid
+        export THEOS=theos
+        
+        # make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootful
+        make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+        # make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
+
+    - name: Upload packages
+      uses: actions/upload-artifact@v3
+      with:
+        name: packages
+        path: packages/*.deb
