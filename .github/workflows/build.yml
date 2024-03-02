@@ -10,7 +10,7 @@ jobs:
     runs-on: macos-14
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@main
 
     - name: Checkout theos/theos
       uses: actions/checkout@main
@@ -38,7 +38,7 @@ jobs:
         # make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
 
     - name: Upload packages
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@main
       with:
         name: packages
         path: packages/*.deb
