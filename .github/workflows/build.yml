@@ -20,7 +20,7 @@ jobs:
         submodules: recursive
         path: theos
 
-    - name: Checkout chrisharper22/sdks
+    - name: Checkout theos/sdks
       uses: actions/checkout@main
       with:
         repository: theos/sdks
