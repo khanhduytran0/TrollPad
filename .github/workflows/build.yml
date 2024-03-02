@@ -33,7 +33,7 @@ jobs:
         brew install make xz ldid
         export THEOS=theos
         
-        # make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootful
+        # make package FINALPACKAGE=1
         make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
         # make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
 
