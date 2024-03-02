@@ -31,14 +31,14 @@ jobs:
     - name: Ensure main utils are installed
       uses: dhinakg/procursus-action@main
       with:
-        packages: ldid coreutils make xz ldid
+        packages: coreutils make xz ldid
           
     - name: Build
       run: |
         export THEOS=theos
         
-        make package FINALPACKAGE=1
-        make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
+        gmake package FINALPACKAGE=1
+        gmake package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
         # make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
 
     - name: Upload packages
