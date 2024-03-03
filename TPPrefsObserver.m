@@ -3,6 +3,7 @@
 @implementation TPPrefsObserver
 - (instancetype)init {
     self = [super init];
+    [self observeKey:@"TPAllowLandscapeHomeScreen"];
     [self observeKey:@"TPUseiPadAppSwitchingAnimation"];
     // Fetch keys
     [self observeValueForKeyPath:nil ofObject:nil change:nil context:nil];
@@ -18,6 +19,8 @@
 
  - (void)observeValueForKeyPath:(NSString *) 
 keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    self.useiPadAppSwitchingAnimation = [NSUserDefaults.standardUserDefaults boolForKey:@"TPUseiPadAppSwitchingAnimation"];
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    self.allowLandscapeHomeScreen = [defaults boolForKey:@"TPAllowLandscapeHomeScreen"];
+    self.useiPadAppSwitchingAnimation = [defaults boolForKey:@"TPUseiPadAppSwitchingAnimation"];
 }
 @end

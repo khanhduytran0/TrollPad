@@ -159,7 +159,7 @@ static uint16_t forcePadIdiom = 0;
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
 %hook SpringBoard
 - (NSInteger)homeScreenRotationStyle {
-    return 1;
+    return pref.allowLandscapeHomeScreen ? 1 : %orig;
 }
 %end
 
