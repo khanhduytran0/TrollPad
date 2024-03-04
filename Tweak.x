@@ -156,6 +156,20 @@ static uint16_t forcePadIdiom = 0;
 }
 %end
 
+// Allow upside down Home Screen
+%hook SBHomeScreenViewController
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return %orig | UIInterfaceOrientationMaskPortraitUpsideDown;
+}
+%end
+
+// Allow upside down Lock Screen
+%hook SBCoverSheetPrimarySlidingViewController
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return %orig | UIInterfaceOrientationMaskPortraitUpsideDown;
+}
+%end
+
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
 %hook SpringBoard
 - (NSInteger)homeScreenRotationStyle {
