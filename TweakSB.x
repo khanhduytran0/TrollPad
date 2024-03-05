@@ -23,17 +23,6 @@ static TPPrefsObserver* pref;
 
 static uint16_t forcePadIdiom = 0;
 
-/*
-%hook UIWindowScene
-- (UIEdgeInsets)_safeAreaInsetsForInterfaceOrientation:(NSInteger)orientation {
-    forcePadIdiom++;
-    UIEdgeInsets result = %orig;
-    forcePadIdiom--;
-    return result;
-}
-%end
-*/
-
 %hook UIDevice
 - (UIUserInterfaceIdiom)userInterfaceIdiom {
     // Ever wondered how I obtained those random functions to hook? This is my way

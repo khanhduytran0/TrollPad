@@ -5,12 +5,15 @@ INSTALL_TARGET_PROCESSES = SpringBoard
 include $(THEOS)/makefiles/common.mk
 # TARGET_CODESIGN = fastPathSign
 
-TWEAK_NAME = TrollPad
+TWEAK_NAME = TrollPadSB TrollPadUI
 
-TrollPad_FILES = Tweak.x TrollPadPrefs/NSUserDefaults+hook.x TPPrefsObserver.m
-TrollPad_CFLAGS = -fobjc-arc
-TrollPad_LDFLAGS = -lMobileGestalt
+TrollPadSB_FILES = TweakSB.x TrollPadPrefs/NSUserDefaults+hook.x TPPrefsObserver.m
+TrollPadSB_CFLAGS = -fobjc-arc
+TrollPadSB_LDFLAGS = -lMobileGestalt
 # TrollPad_PRIVATE_FRAMEWORKS = BoardServices SpringBoard
+
+TrollPadUI_FILES = TweakUI.x
+TrollPadUI_CFLAGS = -fobjc-arc
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += TrollPadPrefs
