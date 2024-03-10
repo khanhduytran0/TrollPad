@@ -12,7 +12,7 @@ Troll SpringBoard into thinking it's running on iPadOS
 - Stage Manager
   + Requires iOS 16 or later
   + External display supports AirPlay too!
-- ~~Floating keyboard~~ this is currently unavailable and will be added back later
+- Floating keyboard
 
 ### Enabling Stage Manager
 > [!WARNING]
@@ -22,4 +22,4 @@ Troll SpringBoard into thinking it's running on iPadOS
 For external display, the behavior is same as on iPadOS: plug and play.
 
 ## Side effects
-- In multitasking modes in landscape, left and right are affected by safe area layout margins
+- In multitasking modes in landscape, left and right are affected by safe area layout margins. This issue doesn't happen in external display.
