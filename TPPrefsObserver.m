@@ -4,6 +4,7 @@
 - (instancetype)init {
     self = [super init];
     [self observeKey:@"TPAllowLandscapeHomeScreen"];
+    [self observeKey:@"TPForceEnableMedusaForLandscapeOnlyApps"];
     [self observeKey:@"TPUseiPadAppSwitchingAnimation"];
     // Fetch keys
     [self observeValueForKeyPath:nil ofObject:nil change:nil context:nil];
@@ -21,6 +22,7 @@
 keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
     self.allowLandscapeHomeScreen = [defaults boolForKey:@"TPAllowLandscapeHomeScreen"];
+    self.forceEnableMedusaForLandscapeOnlyApps = [defaults boolForKey:@"TPForceEnableMedusaForLandscapeOnlyApps"];
     self.useiPadAppSwitchingAnimation = [defaults boolForKey:@"TPUseiPadAppSwitchingAnimation"];
 }
 @end

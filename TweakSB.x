@@ -1,6 +1,7 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 #import <objc/runtime.h>
+#import "SpringBoard.h"
 #import "TPPrefsObserver.h"
 
 #include <assert.h>
@@ -118,9 +119,9 @@ static uint16_t forcePadIdiom = 0;
 %end
 
 // Workaround for iPhones with home button not being able to open Control Center
-%hook BSPlatform
-- (NSInteger)homeButtonType {
-     return 2;
+%hook SBHomeGestureSettings
+- (BOOL)isHomeGestureEnabled {
+    return YES;
 }
 %end
 %hook SBControlCenterController
@@ -133,6 +134,15 @@ static uint16_t forcePadIdiom = 0;
 %hook SBFluidSwitcherViewController
 - (BOOL)isDevicePad {
     return pref.useiPadAppSwitchingAnimation;
+}
+%end
+
+// Fix truncated app name in app switcher
+%hook SBAppSwitcherSettings
+- (void)setDefaultValues {
+    %orig;
+    self.spacingBetweenLeadingEdgeAndIcon = 0;
+    self.spacingBetweenTrailingEdgeAndLabels = 0;
 }
 %end
 
@@ -184,7 +194,8 @@ static uint16_t forcePadIdiom = 0;
 
 %hook SBApplication
 - (BOOL)isMedusaCapable {
-    return YES;
+    return pref.forceEnableMedusaForLandscapeOnlyApps ||
+        (self.info.supportedInterfaceOrientations & UIInterfaceOrientationMaskPortrait) != 0;
 }
 
 - (BOOL)_supportsApplicationType:(int)arg1 {
@@ -217,9 +228,6 @@ BOOL hookedExtDisplayEnabledFunc(){
 }
 
 // Bypass Keyboard & Mouse requirement
-@interface SBExternalDisplayRuntimeAvailabilitySettings : NSObject
-@property(nonatomic, assign) BOOL requirePointer, requireHardwareKeyboard;
-@end
 %hook SBExternalDisplayRuntimeAvailabilitySettings
 - (void)setDefaultValues {
     self.requireHardwareKeyboard = NO;
@@ -246,7 +254,7 @@ BOOL MGGetBoolAnswer(NSString* property);
         extDisplayEnabledFunc = dlsym(sbFoundationHandle, "SBFIsChamoisExternalDisplayControllerAvailable");
     }
     if (extDisplayEnabledFunc) {
-        MSHookFunction(extDisplayEnabledFunc, hookedExtDisplayEnabledFunc, NULL);
+        MSHookFunction((void *)extDisplayEnabledFunc, (void *)hookedExtDisplayEnabledFunc, NULL);
     }
 
     pref = [TPPrefsObserver new];

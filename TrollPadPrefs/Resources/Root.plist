@@ -78,6 +78,18 @@
 			<key>defaults</key>
 			<string>com.apple.springboard</string>
 			<key>key</key>
+			<string>TPForceEnableMedusaForLandscapeOnlyApps</string>
+			<key>label</key>
+			<string>Allow enable Medusa for games</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.apple.springboard</string>
+			<key>key</key>
 			<string>TPUseiPadAppSwitchingAnimation</string>
 			<key>label</key>
 			<string>iPadOS app switching animation</string>
