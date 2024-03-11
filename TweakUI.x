@@ -1,4 +1,7 @@
 #import <UIKit/UIKit.h>
+#import <rootless.h>
+
+static BOOL forcePadKBIdiom = YES, showShortcutButtonsOnKeyboard;
 
 @interface UIDevice(private)
 + (BOOL)_hasHomeButton;
@@ -8,7 +11,6 @@
 @end
 
 // Unlock iPadOS keyboard
-static BOOL forcePadKBIdiom, isUnderDockTweakInstalled = YES;
 UIUserInterfaceIdiom UIKeyboardGetSafeDeviceIdiom();
 %hookf(UIUserInterfaceIdiom, UIKeyboardGetSafeDeviceIdiom) {
     return forcePadKBIdiom ? UIUserInterfaceIdiomPad : %orig;
@@ -38,11 +40,6 @@ UIUserInterfaceIdiom UIKeyboardGetSafeDeviceIdiom();
 %end
 
 %hook UISystemInputAssistantViewController
-- (instancetype)init {
-    isUnderDockTweakInstalled = %c(UnderDockStackView) != nil;
-    return %orig;
-}
-
 // Fix predictive bar not occupying entire area
 - (CGFloat)_centerViewWidthForTraitCollection:(id)tc interfaceOrientation:(UIInterfaceOrientation)orientation {
     forcePadKBIdiom = NO;
@@ -51,9 +48,9 @@ UIUserInterfaceIdiom UIKeyboardGetSafeDeviceIdiom();
     return result;
 }
 
-// Hide assistant buttons when UnderDock tweak is present
+// Show assistant buttons when enabled
 - (void)setInputAssistantButtonItemsForResponder:(id)item {
-    forcePadKBIdiom = !isUnderDockTweakInstalled;
+    forcePadKBIdiom = showShortcutButtonsOnKeyboard;
     %orig;
     forcePadKBIdiom = YES;
 }
@@ -68,3 +65,13 @@ UIUserInterfaceIdiom UIKeyboardGetSafeDeviceIdiom();
     return result;
 }
 %end
+
+static void loadPrefs() {
+	NSMutableDictionary *settings = [[NSMutableDictionary alloc] initWithContentsOfFile:@(ROOT_PATH("/var/mobile/Library/Preferences/com.kdt.trollpad.plist"))];
+	showShortcutButtonsOnKeyboard = [[settings objectForKey:@"TPShowShortcutButtonsOnKeyboard"] boolValue];
+}
+
+%ctor {
+    loadPrefs();
+    CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, (CFNotificationCallback)loadPrefs, CFSTR("com.kdt.trollpad/saved"), NULL, CFNotificationSuspensionBehaviorCoalesce);
+}

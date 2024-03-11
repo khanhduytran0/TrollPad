@@ -21,10 +21,10 @@
 			<string>Stage Manager</string>
 		</dict>
 		<dict>
-			<key>cell</key>
-			<string>PSButtonCell</string>
 			<key>action</key>
 			<string>openDisplayArrangement</string>
+			<key>cell</key>
+			<string>PSButtonCell</string>
 			<key>id</key>
 			<string>DISPLAY_ARRANGEMENT</string>
 			<key>label</key>
@@ -53,16 +53,16 @@
 			<string>PSSliderCell</string>
 			<key>default</key>
 			<real>1</real>
-			<key>min</key>
-			<real>1</real>
-			<key>max</key>
-			<real>3</real>
-			<key>showValue</key>
-			<true/>
 			<key>defaults</key>
 			<string>com.apple.springboard</string>
 			<key>key</key>
 			<string>SBExtendedDisplayContentsScaleAndDontFileRadars</string>
+			<key>max</key>
+			<real>3</real>
+			<key>min</key>
+			<real>1</real>
+			<key>showValue</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -76,11 +76,23 @@
 			<key>default</key>
 			<false/>
 			<key>defaults</key>
+			<string>com.kdt.trollpad</string>
+			<key>key</key>
+			<string>TPShowShortcutButtonsOnKeyboard</string>
+			<key>label</key>
+			<string>Show shortcut buttons on keyboard</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
 			<string>com.apple.springboard</string>
 			<key>key</key>
 			<string>TPForceEnableMedusaForLandscapeOnlyApps</string>
 			<key>label</key>
-			<string>Allow enable Medusa for games</string>
+			<string>Force resizable window for games</string>
 		</dict>
 		<dict>
 			<key>cell</key>

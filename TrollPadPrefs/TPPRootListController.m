@@ -2,6 +2,8 @@
 #import <Preferences/PSSpecifier.h>
 #import "TPPRootListController.h"
 
+#define PREF_PATH @"/var/mobile/Library/Preferences/com.kdt.trollpad.plist"
+
 @implementation TPPRootListController
 
 - (NSArray *)specifiers {
