@@ -13,6 +13,7 @@ Troll SpringBoard into thinking it's running on iPadOS
   + Requires iOS 16 or later
   + External display supports AirPlay too!
 - Floating keyboard
+  + Only works on ios 16 or later for now
 
 ### Enabling Stage Manager
 > [!WARNING]
