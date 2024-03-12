@@ -119,6 +119,11 @@ static uint16_t forcePadIdiom = 0;
 %end
 
 // Workaround for iPhones with home button not being able to open Control Center
+%hook CCSControlCenterDefaults
+- (NSUInteger)_defaultPresentationGesture {
+    return 1;
+}
+%end
 %hook SBHomeGestureSettings
 - (BOOL)isHomeGestureEnabled {
     return YES;
