@@ -228,8 +228,11 @@ static uint16_t forcePadIdiom = 0;
 %end
 
 // Unlock external display support for MDC versions
-BOOL hookedExtDisplayEnabledFunc(){
-    return YES;
+int hookedExtDisplayEnabledFunc() {
+    // clang forgets to PAC this function, so we need this ugly line
+    int hack = 0; if (hack) { abort(); }
+
+    return 1;
 }
 
 // Bypass Keyboard & Mouse requirement
