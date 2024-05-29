@@ -104,7 +104,7 @@ static uint16_t forcePadIdiom = 0;
 - (void)setGridWidths:(NSArray<NSNumber *> *)values {
     NSUInteger maxValue = values.lastObject.unsignedIntValue;
     NSMutableArray *array = [NSMutableArray array];
-    for (int i = 150; i < maxValue; i += 50) {
+    for (int i = 150; i < maxValue; i += 20) {
         [array addObject:@(i)];
     }
     [array addObject:@(maxValue)];
@@ -114,7 +114,7 @@ static uint16_t forcePadIdiom = 0;
 - (void)setGridHeights:(NSArray<NSNumber *> *)values {
     NSUInteger maxValue = values.lastObject.unsignedIntValue;
     NSMutableArray *array = [NSMutableArray array];
-    for (int i = 150; i < maxValue; i += 50) {
+    for (int i = 150; i < maxValue; i += 20) {
         [array addObject:@(i)];
     }
     [array addObject:@(maxValue)];
