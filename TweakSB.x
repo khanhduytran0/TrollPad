@@ -68,6 +68,19 @@ static uint16_t forcePadIdiom = 0;
 }
 %end
 
+/*
+%hook SBFloatingDockView
+- (CGFloat)contentHeightForBounds:(CGRect)frame {
+    if (frame.size.width > frame.size.height) {
+        CGFloat width = frame.size.height;
+        frame.size.height = frame.size.width;
+        frame.size.width = width;
+    }
+    return %orig;
+}
+%end
+*/
+
 // Enable Medusa multitasking (three-dots) button on top
 %hook SBFullScreenSwitcherLiveContentOverlayCoordinator
 -(void)layoutStateTransitionCoordinator:(id)arg1 transitionDidBeginWithTransitionContext:(id)arg2 {
@@ -83,6 +96,29 @@ static uint16_t forcePadIdiom = 0;
     forcePadIdiom++;
     %orig;
     forcePadIdiom--;
+}
+%end
+
+// Min width and height are 150, smaller may crash the app
+%hook SBSwitcherChamoisLayoutAttributes
+- (void)setGridWidths:(NSArray<NSNumber *> *)values {
+    NSUInteger maxValue = values.lastObject.unsignedIntValue;
+    NSMutableArray *array = [NSMutableArray array];
+    for (int i = 150; i < maxValue; i += 50) {
+        [array addObject:@(i)];
+    }
+    [array addObject:@(maxValue)];
+    %orig(array);
+}
+
+- (void)setGridHeights:(NSArray<NSNumber *> *)values {
+    NSUInteger maxValue = values.lastObject.unsignedIntValue;
+    NSMutableArray *array = [NSMutableArray array];
+    for (int i = 150; i < maxValue; i += 50) {
+        [array addObject:@(i)];
+    }
+    [array addObject:@(maxValue)];
+    %orig(array);
 }
 %end
 
