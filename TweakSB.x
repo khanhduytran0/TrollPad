@@ -68,16 +68,6 @@ static uint16_t forcePadIdiom = 0;
 }
 %end
 
-%hook UITraitCollection
-- (UIUserInterfaceIdiom)userInterfaceIdiom {
-    if (forcePadIdiom > 0) {
-        return UIUserInterfaceIdiomPad;
-    } else {
-        return %orig;
-    }
-}
-%end
-
 /*
 %hook SBFloatingDockView
 - (CGFloat)contentHeightForBounds:(CGRect)frame {
