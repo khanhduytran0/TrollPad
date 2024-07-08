@@ -84,8 +84,8 @@ static uint16_t forcePadIdiom = 0;
 // Fix status bar for the external display
 %hook _UIStatusBar
 - (void)_prepareVisualProviderIfNeeded {
-    UIScreen *screen = self._effectiveTargetScreen;
-    if (forcePadIdiom || screen != UIScreen.mainScreen) {
+    UIScreen *screen = self.targetScreen ?: self._effectiveTargetScreen;
+    if (screen._isExternal) {
         // For performance reason, we're gonna overwrite userInterfaceIdiom directly
         // userInterfaceIdiom: ldr x0, [x0, #0x8]
         uint64_t *collection = (uint64_t *)(__bridge void *)screen.traitCollection;

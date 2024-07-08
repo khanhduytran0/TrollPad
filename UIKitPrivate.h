@@ -18,6 +18,7 @@
 
 @interface _UIStatusBar
 - (void)setTargetScreen:(UIScreen *)screen;
+- (UIScreen *)targetScreen;
 - (UIScreen *)_effectiveTargetScreen;
 @end
 
