@@ -15,3 +15,7 @@
 @interface SBExternalDisplayRuntimeAvailabilitySettings : NSObject
 @property(nonatomic, assign) BOOL requirePointer, requireHardwareKeyboard;
 @end
+
+@interface SBWindowScene : UIWindowScene
+- (BOOL)isExternalDisplayWindowScene;
+@end

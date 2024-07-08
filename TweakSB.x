@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
-#import <UIKit/UIKit.h>
 #import <objc/runtime.h>
 #import "SpringBoard.h"
 #import "TPPrefsObserver.h"
+#import "UIKitPrivate.h"
 
 #include <assert.h>
 #include <dlfcn.h>
@@ -68,6 +68,16 @@ static uint16_t forcePadIdiom = 0;
 }
 %end
 
+%hook UITraitCollection
+- (UIUserInterfaceIdiom)userInterfaceIdiom {
+    if (forcePadIdiom > 0) {
+        return UIUserInterfaceIdiomPad;
+    } else {
+        return %orig;
+    }
+}
+%end
+
 /*
 %hook SBFloatingDockView
 - (CGFloat)contentHeightForBounds:(CGRect)frame {
@@ -81,6 +91,40 @@ static uint16_t forcePadIdiom = 0;
 %end
 */
 
+// Fix status bar for the external display
+%hook _UIStatusBar
+- (void)_prepareVisualProviderIfNeeded {
+    UIScreen *screen = self._effectiveTargetScreen;
+    if (forcePadIdiom || screen != UIScreen.mainScreen) {
+        // For performance reason, we're gonna overwrite userInterfaceIdiom directly
+        // userInterfaceIdiom: ldr x0, [x0, #0x8]
+        uint64_t *collection = (uint64_t *)(__bridge void *)screen.traitCollection;
+        if (collection) {
+            collection[1] = UIUserInterfaceIdiomPad;
+        }
+    }
+    %orig;
+}
+%end
+%hook UIStatusBarWindow
+- (void)setStatusBar:(UIStatusBar *)statusBar {
+    if (self.windowScene.screen._isExternal) {
+        statusBar.statusBar.targetScreen = self.windowScene.screen;
+    }
+    %orig;
+}
+%end
+
+/*
+%hook SBSystemShellExtendedDisplayControllerPolicy
+-(void)displayController:(id)arg1 didBeginTransaction:(id)arg2 sceneManager:(id)arg3 displayConfiguration:(id)arg4 deactivationReasons:(unsigned long long)arg5 {
+    forcePadIdiom++;
+    %orig;
+    forcePadIdiom--;
+}
+%end
+*/
+
 // Enable Medusa multitasking (three-dots) button on top
 %hook SBFullScreenSwitcherLiveContentOverlayCoordinator
 -(void)layoutStateTransitionCoordinator:(id)arg1 transitionDidBeginWithTransitionContext:(id)arg2 {
@@ -89,6 +133,15 @@ static uint16_t forcePadIdiom = 0;
     forcePadIdiom--;
 }
 %end
+/*
+%hook SBShelfLiveContentOverlayCoordinator
+-(void)layoutStateTransitionCoordinator:(id)arg1 transitionDidBeginWithTransitionContext:(id)arg2 {
+    forcePadIdiom++;
+    %orig;
+    forcePadIdiom--;
+}
+%end
+*/
 
 // Fix iOS 16 multitasking (split screen, slide over, stage manager)
 %hook SBMainSwitcherControllerCoordinator
@@ -171,11 +224,18 @@ static uint16_t forcePadIdiom = 0;
 }
 %end
 
-// Use iPadOS app switching animation instead
 %hook SBFluidSwitcherViewController
+// Use iPadOS app switching animation instead
 - (BOOL)isDevicePad {
     return pref.useiPadAppSwitchingAnimation;
 }
+
+// Restore number of grid to 1
+/*
+- (NSUInteger)numberOfRowsInGridSwitcher {
+    return 1;
+}
+*/
 %end
 
 // Fix truncated app name in app switcher

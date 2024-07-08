@@ -1,14 +1,7 @@
-#import <UIKit/UIKit.h>
+#import "UIKitPrivate.h"
 #import <rootless.h>
 
 static BOOL forcePadKBIdiom = YES, showShortcutButtonsOnKeyboard;
-
-@interface UIDevice(private)
-+ (BOOL)_hasHomeButton;
-@end
-@interface UIKeyboardImpl : NSObject
-+ (BOOL)isFloating;
-@end
 
 // Unlock iPadOS keyboard
 UIUserInterfaceIdiom UIKeyboardGetSafeDeviceIdiom();
