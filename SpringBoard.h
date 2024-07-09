@@ -16,6 +16,13 @@
 @property(nonatomic, assign) BOOL requirePointer, requireHardwareKeyboard;
 @end
 
+@interface SBFluidSwitcherItemContainer : UIView
+- (BOOL)isResizingAllowed;
+@end
+
+@interface SBAppResizeGrabberView : UIView
+@end
+
 @interface SBWindowScene : UIWindowScene
 - (BOOL)isExternalDisplayWindowScene;
 @end

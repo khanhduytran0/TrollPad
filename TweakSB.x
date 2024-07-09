@@ -214,6 +214,27 @@ static uint16_t forcePadIdiom = 0;
 }
 %end
 
+// Forcibly enable resizable as iOS somehow disabled it in the external display
+%hook SBFluidSwitcherItemContainer
+- (void)setAllowedTouchResizeCorners:(NSUInteger)cornerMask {
+    // !self.isResizingAllowed && 
+    if (self._screen != UIScreen.mainScreen) {
+        %orig(15);
+        // 12 (binary 1100): enable resizing for bottoms
+        // 15 (binary 1111): enable resizing for all corners
+    } else {
+        %orig;
+    }
+}
+%end
+
+%hook SBAppResizeGrabberView
+- (void)setAlpha:(CGFloat)alpha {
+    %orig;
+    self.hidden = pref.hideStageManagerResizeCorners;
+}
+%end
+
 %hook SBFluidSwitcherViewController
 // Use iPadOS app switching animation instead
 - (BOOL)isDevicePad {
@@ -316,7 +337,7 @@ static uint16_t forcePadIdiom = 0;
 // Unlock external display support for MDC versions
 int hookedExtDisplayEnabledFunc() {
     // clang forgets to PAC this function, so we need this ugly line
-    int hack = 0; if (hack) { abort(); }
+    int hack = 0; if (hack) { printf(""); }
 
     return 1;
 }

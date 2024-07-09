@@ -1,6 +1,6 @@
 Package: com.kdt.trollpad
 Name: TrollPad
-Version: 1.2.3
+Version: 1.3
 Architecture: iphoneos-arm
 Description: Troll SpringBoard into thinking it's running on iPadOS.
 Maintainer: khanhduytran0

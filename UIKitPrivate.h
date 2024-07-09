@@ -25,3 +25,7 @@
 @interface UIStatusBar
 - (_UIStatusBar *)statusBar;
 @end
+
+@interface UIView(private)
+- (UIScreen *)_screen;
+@end
