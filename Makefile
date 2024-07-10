@@ -9,11 +9,12 @@ TWEAK_NAME = TrollPadSB TrollPadUI
 
 TrollPadSB_FILES = TweakSB.x TrollPadPrefs/NSUserDefaults+hook.x TPPrefsObserver.m
 TrollPadSB_CFLAGS = -fobjc-arc
-TrollPadSB_LDFLAGS = -lMobileGestalt
+TrollPadSB_LIBRARIES = MobileGestalt
 # TrollPad_PRIVATE_FRAMEWORKS = BoardServices SpringBoard
 
 TrollPadUI_FILES = TweakUI.x
 TrollPadUI_CFLAGS = -fobjc-arc
+TrollPadUI_LIBRARIES = root
 
 include $(THEOS_MAKE_PATH)/tweak.mk
 SUBPROJECTS += TrollPadPrefs
