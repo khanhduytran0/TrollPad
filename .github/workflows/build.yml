@@ -15,7 +15,7 @@ jobs:
     - name: Checkout theos/theos
       uses: actions/checkout@main
       with:
-        repository: theos/theos
+        repository: roothide/theos
         ref: master
         submodules: recursive
         path: theos
@@ -39,7 +39,7 @@ jobs:
         
         gmake package FINALPACKAGE=1
         gmake package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=rootless
-        # make package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
+        gmake package FINALPACKAGE=1 THEOS_PACKAGE_SCHEME=roothide
 
     - name: Upload packages
       uses: actions/upload-artifact@main
