@@ -15,7 +15,7 @@ jobs:
     - name: Checkout theos/theos
       uses: actions/checkout@main
       with:
-        repository: roothide/theos
+        repository: theos/theos
         ref: master
         submodules: recursive
         path: theos
