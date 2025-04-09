@@ -9,6 +9,28 @@ UIUserInterfaceIdiom UIKeyboardGetSafeDeviceIdiom();
     return forcePadKBIdiom ? UIUserInterfaceIdiomPad : %orig;
 }
 
+// Allow UIHoverGestureRecognizer and pointer interaction on iPhone
+%hook UIPointerInteraction
+- (void)_updateInteractionIsEnabled {
+    UIView *view = self.view;
+    BOOL enabled = self.enabled; // && view.traitCollection.userInterfaceIdiom == UIUserInterfaceIdiomPad
+    for(id<_UIPointerInteractionDriver> driver in self.drivers) {
+        driver.view = enabled ? view : nil;
+    }
+    // to keep it fast, ivar offset is cached for later direct access
+    static ptrdiff_t ivarOff = 0;
+    if(!ivarOff) {
+        ivarOff = ivar_getOffset(class_getInstanceVariable(self.class, "_observingPresentationNotification"));
+    }
+
+    BOOL *observingPresentationNotification = (BOOL *)((uint64_t)(__bridge void *)self + ivarOff);
+    if(!enabled && *observingPresentationNotification) {
+        [NSNotificationCenter.defaultCenter removeObserver:self name:UIPresentationControllerPresentationTransitionWillBeginNotification object:nil];
+        *observingPresentationNotification = NO;
+    }
+}
+%end
+
 // Fix bottom padding
 %hook UIKeyboardImpl
 + (UIEdgeInsets)deviceSpecificPaddingForInterfaceOrientation:(NSUInteger)arg1 inputMode:(id)arg2 {

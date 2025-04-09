@@ -219,9 +219,9 @@ static uint16_t forcePadIdiom = 0;
 - (void)setAllowedTouchResizeCorners:(NSUInteger)cornerMask {
     // !self.isResizingAllowed && 
     if (self._screen != UIScreen.mainScreen) {
-        %orig(15);
-        // 12 (binary 1100): enable resizing for bottoms
-        // 15 (binary 1111): enable resizing for all corners
+        %orig(0b1111);
+        // 1100: enable resizing for bottoms
+        // 1111: enable resizing for all corners
     } else {
         %orig;
     }

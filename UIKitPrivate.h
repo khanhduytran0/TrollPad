@@ -1,10 +1,20 @@
 #import <UIKit/UIKit.h>
 
+extern NSNotificationName UIPresentationControllerPresentationTransitionWillBeginNotification;
+
+@protocol _UIPointerInteractionDriver<NSObject>
+@property (assign, nonatomic) UIView *view;
+@end
+
 @interface UIDevice(private)
 + (BOOL)_hasHomeButton;
 @end
 @interface UIKeyboardImpl : NSObject
 + (BOOL)isFloating;
+@end
+
+@interface UIPointerInteraction(private)
+- (NSArray <id<_UIPointerInteractionDriver>> *)drivers;
 @end
 
 @interface UIScreen(private)
