@@ -281,6 +281,13 @@ static uint16_t forcePadIdiom = 0;
 }
 %end
 
+// Pass true to supportAppSceneRequests
+%hook UISApplicationInitializationContext
+- (id)initWithMainDisplayContext:(id)arg1 launchDisplayContext:(id)arg2 deviceContext:(id)arg3 persistedSceneIdentifiers:(id)arg4 supportAppSceneRequests:(BOOL)arg5 {
+    return %orig(arg1, arg2, arg3, arg4, YES);
+}
+%end
+
 // The following hooks are taken from various sources, please refer to tweaks that enable Slide Over.
 %hook SpringBoard
 - (NSInteger)homeScreenRotationStyle {
