@@ -1,8 +1,8 @@
 #!/bin/sh
 
 set -e
-# FIXME: use $JB_ROOT_PATH instead?
-bundle_jb=/var/jb/Library/ControlCenter/Bundles/ContinuousExposeModule.bundle
+jb_root_path=$(realpath $HOME/../..)
+bundle_jb=$jb_root_path/Library/ControlCenter/Bundles/ContinuousExposeModule.bundle
 
 case "$1" in
 	(remove)

@@ -1,10 +1,10 @@
 #!/bin/sh
 
 set -e
+jb_root_path=$(realpath $HOME/../..)
 bundle_system=/System/Library/ControlCenter/Bundles/ContinuousExposeModule.bundle
-# FIXME: use $JB_ROOT_PATH instead?
-bundle_jb=/var/jb/Library/ControlCenter/Bundles/ContinuousExposeModule.bundle
-plistbuddy=/var/jb/usr/libexec/PlistBuddy
+bundle_jb=$jb_root_path/Library/ControlCenter/Bundles/ContinuousExposeModule.bundle
+plistbuddy=$jb_root_path/usr/libexec/PlistBuddy
 
 case "$1" in
 	(configure)
