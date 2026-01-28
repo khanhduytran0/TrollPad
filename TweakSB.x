@@ -142,6 +142,15 @@ static uint16_t forcePadIdiom = 0;
 }
 %end
 
+// Fix iOS 18 app switcher animation
+%hook SBSwitcherController
+- (void)_updateContentViewControllerIfNeeded {
+    forcePadIdiom++;
+    %orig;
+    forcePadIdiom--;
+}
+%end
+
 // Min width and height are 150, smaller may crash the app
 %hook SBSwitcherChamoisLayoutAttributes
 - (void)setGridWidths:(NSArray<NSNumber *> *)values {
