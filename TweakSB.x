@@ -339,7 +339,7 @@ static uint16_t forcePadIdiom = 0;
 
 %hook SBFloatingDockController
 + (BOOL)isFloatingDockSupported {
-    return YES;
+    return pref.isFloatingDockSupported ? YES : %orig;
 }
 %end
 

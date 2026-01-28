@@ -7,6 +7,7 @@
     [self observeKey:@"TPForceEnableMedusaForLandscapeOnlyApps"];
     [self observeKey:@"TPHideStageManagerResizeCorners"];
     [self observeKey:@"TPUseiPadAppSwitchingAnimation"];
+    [self observeKey:@"TPIsFloatingDockSupported"];
     // Fetch keys
     [self observeValueForKeyPath:nil ofObject:nil change:nil context:nil];
     return self;
@@ -26,5 +27,6 @@ keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)contex
     self.forceEnableMedusaForLandscapeOnlyApps = [defaults boolForKey:@"TPForceEnableMedusaForLandscapeOnlyApps"];
     self.hideStageManagerResizeCorners = [defaults boolForKey:@"TPHideStageManagerResizeCorners"];
     self.useiPadAppSwitchingAnimation = [defaults boolForKey:@"TPUseiPadAppSwitchingAnimation"];
+    self.isFloatingDockSupported = [defaults boolForKey:@"TPIsFloatingDockSupported"];
 }
 @end
