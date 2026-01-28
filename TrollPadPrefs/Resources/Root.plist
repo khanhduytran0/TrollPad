@@ -137,6 +137,18 @@
 			<true/>
 			<key>defaults</key>
 			<string>com.apple.springboard</string>
+			<key>key</key>
+			<string>TPIsFloatingDockSupported</string>
+			<key>label</key>
+			<string>Floating Dock</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.apple.springboard</string>
 			<key>id</key>
 			<string>SHOW_APP_LIBRARY</string>
 			<key>key</key>
