@@ -348,6 +348,27 @@ static uint16_t forcePadIdiom = 0;
 - (NSInteger)effectiveSwitcherStyle {
     return 2;
 }
+
+// Scales the grid switcher
+- (void)setGridSwitcherPageScale:(CGFloat)arg1 {
+    return pref.scaleGridSwitcher ? %orig(0.38) : %orig;
+}
+
+- (void)setGridSwitcherVerticalNaturalSpacingPortrait:(CGFloat)arg1 {
+    return pref.scaleGridSwitcher ? %orig(65) : %orig;
+}
+
+- (void)setGridSwitcherVerticalNaturalSpacingLandscape:(CGFloat)arg1 {
+    return pref.scaleGridSwitcher ? %orig(40) : %orig;
+}
+
+- (void)setGridSwitcherHorizontalInterpageSpacingPortrait:(CGFloat)arg1 {
+    return pref.scaleGridSwitcher ? %orig(30) : %orig;
+}
+
+- (void)setGridSwitcherHorizontalInterpageSpacingLandscape:(CGFloat)arg1 {
+    return pref.scaleGridSwitcher ? %orig(10) : %orig;
+}
 %end
 
 // Unlock external display support for MDC versions
